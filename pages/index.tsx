@@ -1,16 +1,14 @@
 import type {NextPage} from 'next'
-import Head from 'next/head'
-import Header from "../components/partials/Header";
-import {Typography} from "@mui/material";
+import {Container, Typography} from "@mui/material";
 
 
 const Home: NextPage = () => {
     return (
-        <div>
+        <Container maxWidth={"xl"}>
             <Typography component={"h1"}>
                 FoodFactory
             </Typography>
-        </div>
+        </Container>
     )
 }
 

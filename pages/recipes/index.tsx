@@ -1,6 +1,7 @@
+import {useUser, withPageAuthRequired} from "@auth0/nextjs-auth0";
+import {NextPage} from "next";
 
-
-const RecipesList = () => {
+const RecipeList: NextPage = () => {
 
     return <div>
         recipe list
@@ -8,4 +9,5 @@ const RecipesList = () => {
 
 }
 
-export default RecipesList
+export default RecipeList
+
