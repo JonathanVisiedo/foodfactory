@@ -2,20 +2,21 @@ import {Grid, TextField} from "@mui/material";
 import {useState} from "react";
 
 
-const IngredientForm = ({ ingredient, updateIngredient, itemKey }) => {
+
+const IngredientForm = ({ ingredient, updateIngredient, itemKey }:any) => {
 
     const [barcode, setBarcode] = useState('')
     const [name, setName] = useState('')
     const [quantity, setQuantity] = useState(0)
 
     // check why it's a promise ?
-    const fetchBarcode = async (code) => {
+    const fetchBarcode = async (code:string) => {
         const response = await fetch(`https://world.openfoodfacts.org/api/v0/product/${code}.json`)
         const data = await response.json()
         return data
     }
 
-    const updateBarcode = (e) => {
+    const updateBarcode = (e:any) => {
         const inputBarcode = e.target.value
         setBarcode(inputBarcode)
 
@@ -26,7 +27,7 @@ const IngredientForm = ({ ingredient, updateIngredient, itemKey }) => {
                     setName(data.product.product_name)
                     updateIngredient(itemKey, {
                         key: itemKey,
-                        barcode,
+                        barcode: inputBarcode,
                         name: data.product.product_name,
                         quantity
                     })
@@ -36,7 +37,7 @@ const IngredientForm = ({ ingredient, updateIngredient, itemKey }) => {
             })
     }
 
-    const updateName = (e) => {
+    const updateName = (e:any) => {
         setName(e.target.value)
         updateIngredient(itemKey, {
             key: itemKey,
@@ -46,7 +47,7 @@ const IngredientForm = ({ ingredient, updateIngredient, itemKey }) => {
         })
     }
 
-    const updateQuantity = (e) => {
+    const updateQuantity = (e:any) => {
         setQuantity(e.target.value)
         updateIngredient(itemKey, {
             key: itemKey,
