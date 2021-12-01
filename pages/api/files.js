@@ -18,22 +18,37 @@ const post = async (req, res) => {
     return res
 };
 
+const del = async (req, res) => {
+    delFile(`./public/${req.query.path}`)
+    return res
+}
+
 const saveFile = async (file) => {
     const data = fs.readFileSync(file.filepath);
     fs.writeFileSync(`./public/${file.originalFilename}`, data);
-    await fs.unlinkSync(file.filepath);
-
     return file.originalFilename
 };
 
+const delFile = async (path) => {
+    await fs.unlinkSync(path);
+    return 'DELETED';
+}
+
 export default (req, res) => {
-    req.method === "POST"
-        ? post(req, res)
-        : req.method === "PUT"
-            ? console.log("PUT")
-            : req.method === "DELETE"
-                ? console.log("DELETE")
-                : req.method === "GET"
-                    ? console.log("GET")
-                    : res.status(404).send("");
+    switch (req.method){
+        case 'POST':
+            post(req, res)
+            break;
+        case 'DELETE':
+            del(req, res)
+            break;
+        default:
+            res.status(404).send("");
+            break;
+
+    }
+
+    res.status(200).end();
+
+
 };

@@ -9,13 +9,20 @@ import {grey} from "@mui/material/colors";
 import {Cloud, Send} from "@mui/icons-material";
 import slugify from 'react-slugify';
 import {useMutation} from "@apollo/client";
-import {CREATE_RECIPE} from "../../../graphql/Mutations";
+import {CREATE_RECIPE, CREATE_RECIPE_INGREDIENT} from "../../../graphql/Mutations";
+import {FETCH_RECIPES} from "../../../graphql/Queries";
 
 const RecipeCreate: NextPage = () => {
 
     const theme = useTheme()
     const {user, error, isLoading} = useUser();
-    const [createRecipe, { error:createError, loading:createLoading}] = useMutation(CREATE_RECIPE)
+    const [createRecipe, { error:createError, loading:createLoading}] = useMutation(CREATE_RECIPE,{
+        refetchQueries: [
+            FETCH_RECIPES, // DocumentNode object parsed with gql
+            'fetchRecipes' // Query name
+        ]
+    })
+    const [createIngredients, { error:ingredientError, loading:ingredientLoading}] = useMutation(CREATE_RECIPE_INGREDIENT)
 
     if (isLoading) <div>Loading...</div>
     if (error) <div>{error.message}</div>
@@ -41,8 +48,21 @@ const RecipeCreate: NextPage = () => {
         }
 
         createRecipe({variables: recipe})
-            .then(res => {
-                console.log(res)
+            .then(({data}) => {
+                let ingredientObject;
+
+                ingredientObject = ingredients.map(({name, quantity, barcode}) => ({
+                    name,
+                    quantity,
+                    barcode,
+                    recipe_id: data.insert_recipes_one.id
+                }))
+
+                createIngredients({
+                    variables: {
+                        objects: ingredientObject
+                    }
+                })
             })
     }
 
@@ -104,15 +124,15 @@ const RecipeCreate: NextPage = () => {
     }
 
 
-    useEffect(() => {
-        console.log(`action triggered`)
-        console.log(`key: ${key}`)
-        console.log(`title: ${title}`)
-        console.log(`shortDetails: ${shortDetails}`)
-        console.log(`details: ${details}`)
-        console.log(`miniature`, miniature)
-        console.log(ingredients)
-    }, [updateIngredient])
+    // useEffect(() => {
+    //     console.log(`action triggered`)
+    //     console.log(`key: ${key}`)
+    //     console.log(`title: ${title}`)
+    //     console.log(`shortDetails: ${shortDetails}`)
+    //     console.log(`details: ${details}`)
+    //     console.log(`miniature`, miniature)
+    //     console.log(ingredients)
+    // }, [updateIngredient])
 
     return <>
         <Heading>

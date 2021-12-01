@@ -1,8 +1,18 @@
-import {Card, CardContent, CardHeader, CardMedia, IconButton, Typography} from "@mui/material";
-import React from "react";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardMedia,
+    IconButton,
+    List,
+    ListItem,
+    ListItemText,
+    Typography
+} from "@mui/material";
+import React, {useState} from "react";
 import {DeleteOutline} from "@mui/icons-material";
 import {useMutation} from "@apollo/client";
-import {DELETE_RECIPE} from "../graphql/Mutations";
+import {DELETE_RECIPE, DELETE_RECIPE_INGREDIENTS} from "../graphql/Mutations";
 import {FETCH_RECIPES} from "../graphql/Queries";
 
 
@@ -14,13 +24,32 @@ const RecipeCard = ({recipe}: {recipe:any}) => {
             'fetchRecipes' // Query name
         ]
     })
+    const [deleteIngredients, { error: ingredientDeleteError, loading: ingredientDeleteLoading}] = useMutation(DELETE_RECIPE_INGREDIENTS)
 
-    const handleDelete:any = (id:any) => {
-        deleteRecipe({
+    const handleDelete:any = async (id:any) => {
+
+        await fetch(`http://localhost:3000/api/files?path=${recipe.miniature}`, {
+            method: "DELETE",
+            headers: {Accept: 'application/json','Content-Type': 'application/json'}
+        });
+
+        deleteIngredients({
             variables: {
-                id
+                recipe_id: id
             }
         })
+            .then(r => {
+                deleteRecipe({
+                    variables: {
+                        id
+                    }
+                })
+                    .then(r => {
+                        console.log(r)
+                    })
+            })
+
+
     }
 
     return <Card elevation={1}>
@@ -40,6 +69,15 @@ const RecipeCard = ({recipe}: {recipe:any}) => {
         />
         <CardContent>
             <Typography variant={"body2"} color={"textSecondary"}>{recipe.short_details}</Typography>
+            <List sx={{margin:0}}>
+                {
+                    recipe.Ingredients && recipe.Ingredients.map((ingredient:any) => {
+                        return <ListItem key={`a${ingredient.name}`}>
+                            <ListItemText primary={ingredient.name} secondary={`${ingredient.quantity} g`}/>
+                        </ListItem>
+                    })
+                }
+            </List>
         </CardContent>
     </Card>
 

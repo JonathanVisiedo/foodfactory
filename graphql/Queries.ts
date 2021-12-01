@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 
-export const FETCH_RECIPES = gql`query MyQuery {
+export const FETCH_RECIPES = gql`query fetchRecipes {
     recipes {
         id
         name
@@ -10,6 +10,11 @@ export const FETCH_RECIPES = gql`query MyQuery {
         miniature
         public
         profile_id
+        Ingredients {
+            barcode
+            name
+            quantity
+        }
     }
 }
 `
