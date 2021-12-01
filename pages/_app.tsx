@@ -1,26 +1,14 @@
+import {useState} from "react";
 import type {AppProps} from 'next/app'
 import {UserProvider} from "@auth0/nextjs-auth0";
 import Layout from '../components/partials/Layout'
 import '../styles/global.scss'
-import {ApolloClient, ApolloProvider, HttpLink, InMemoryCache} from "@apollo/client";
-import {useState} from "react";
+import { ApolloProvider } from "@apollo/client";
+import {useApollo} from "../lib/apollo";
 
 function MyApp({Component, pageProps}: AppProps) {
 
-    const createApolloClient = (secret: string|undefined) => {
-        return new ApolloClient({
-            link: new HttpLink({
-                uri: "https://integral-cougar-77.hasura.app/v1/graphql",
-                credentials: 'include',
-                headers: {
-                    "x-hasura-admin-secret": `${secret}`
-                }
-            }),
-            cache: new InMemoryCache()
-        });
-    }
-
-    const [client] = useState(createApolloClient(process.env.HASURA_APP_SECRET));
+    const client = useApollo(pageProps.initialApolloProps)
 
     return <UserProvider>
         <ApolloProvider client={client}>

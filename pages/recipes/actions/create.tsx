@@ -13,9 +13,10 @@ import {CREATE_RECIPE} from "../../../graphql/Mutations";
 
 const RecipeCreate: NextPage = () => {
 
-    const {user, error, isLoading} = useUser();
     const theme = useTheme()
-    const [addRecipe] = useMutation(CREATE_RECIPE)
+    const {user, error, isLoading} = useUser();
+    const [createRecipe, { error:createError, loading:createLoading}] = useMutation(CREATE_RECIPE)
+
     if (isLoading) <div>Loading...</div>
     if (error) <div>{error.message}</div>
 
@@ -36,15 +37,13 @@ const RecipeCreate: NextPage = () => {
             public: 1,
             profile_id: 1,
             details,
-            short_details: shortDetails,
-            ingredients
+            short_details: shortDetails
         }
 
-        addRecipe({variables: recipe})
+        createRecipe({variables: recipe})
             .then(res => {
                 console.log(res)
             })
-        console.log(recipe)
     }
 
     const [key, setKey] = useState(0)
