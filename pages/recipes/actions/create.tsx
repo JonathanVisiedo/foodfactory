@@ -11,6 +11,7 @@ import slugify from 'react-slugify';
 import {useMutation} from "@apollo/client";
 import {CREATE_RECIPE, CREATE_RECIPE_INGREDIENT} from "../../../graphql/Mutations";
 import {FETCH_RECIPES} from "../../../graphql/Queries";
+import Loading from "../../../components/Loading";
 
 const RecipeCreate: NextPage = () => {
 
@@ -50,7 +51,7 @@ const RecipeCreate: NextPage = () => {
         createRecipe({variables: recipe})
             .then(({data}) => {
                 let ingredientObject;
-
+                console.log(data)
                 ingredientObject = ingredients.map(({name, quantity, barcode}) => ({
                     name,
                     quantity,
@@ -123,16 +124,7 @@ const RecipeCreate: NextPage = () => {
         setKey(key - 1)
     }
 
-
-    // useEffect(() => {
-    //     console.log(`action triggered`)
-    //     console.log(`key: ${key}`)
-    //     console.log(`title: ${title}`)
-    //     console.log(`shortDetails: ${shortDetails}`)
-    //     console.log(`details: ${details}`)
-    //     console.log(`miniature`, miniature)
-    //     console.log(ingredients)
-    // }, [updateIngredient])
+    if(isLoading || createLoading ) return <Loading/>
 
     return <>
         <Heading>

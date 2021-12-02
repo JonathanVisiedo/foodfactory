@@ -20,7 +20,8 @@ const post = async (req, res) => {
 
 const del = async (req, res) => {
     delFile(`./public/${req.query.path}`)
-    return res
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({message: 'DELETED'}, null, 2));
 }
 
 const saveFile = async (file) => {
@@ -31,7 +32,6 @@ const saveFile = async (file) => {
 
 const delFile = async (path) => {
     await fs.unlinkSync(path);
-    return 'DELETED';
 }
 
 export default (req, res) => {
@@ -48,7 +48,6 @@ export default (req, res) => {
 
     }
 
-    res.status(200).end();
 
 
 };
